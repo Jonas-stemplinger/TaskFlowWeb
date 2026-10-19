@@ -1,0 +1,23 @@
+<body>
+    <div class="login-box">
+        <h2>Login</h2>
+
+        <form action="#" method="POST">
+            <input id="email" type="email" name="email" [(ngModel)]="email" placeholder="E-Mail-Adresse" autocomplete="email" required>
+
+            <input id="password" type="password" name="password" [(ngModel)]="password" placeholder="Passwort" autocomplete="current-password" required>
+
+            <button type="submit" (click)="login()">Anmelden</button>
+        </form>
+
+        <p>Noch keinen Aount? <a href="/login">Registrieren</a></p>
+    </div>
+
+    @if (errorMessage) {
+            <div class="error-message-container" style="border: white 2px solid;">
+                <p style="color: whitesmoke; font-size: 32px;">
+                    {{ errorMessage }}
+                </p>
+            </div>
+        }
+</body>

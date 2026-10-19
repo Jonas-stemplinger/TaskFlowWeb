@@ -1,0 +1,164 @@
+<div class="indexContainer">
+    <div class="sidebar">
+        <div class="sidebar-LogoContainer">
+
+            <h1 class="sidebar-LogoText" style="cursor: default;">
+                Task-Flow<span>-Web</span>
+            </h1>
+
+        </div>
+
+        <button
+            class="sidebar-MeinTagContainer"
+            type="button" (click)="startseiteAnzeigen()">
+
+            <img
+                draggable="false"
+                src="/assets/sun.png"
+                class="sidebar-MeinTagImg"
+            >
+
+            <span class="sidebar-MeinTagText">
+                Mein Tag
+            </span>
+
+        </button>
+
+        <div class="sidebar-MeineProjekteContainer">
+
+            <p class="sidebar-MeineProjekte-Text" style="cursor: default;">
+                Meine Projekte
+            </p>
+
+            <button class="sidebar-MeineProjekte-Button" type="button" (click)="projektHinzufuegen()">
+                +
+            </button>
+
+        </div>
+
+        @if (isLoading) {
+            <p class="LoadingAnimation">Projekte werden geladen...</p>
+        }
+
+        @if (errorMessage) {
+            <div class="error-message-container">
+                <p class="sidebar-error">
+                    {{ errorMessage }}
+                </p>
+            </div>
+        }
+
+        <div class="sidebar-ProjektListeContainer">
+
+            <ul class="sidebar-ProjektListe">
+
+                @for (projekt of projekte; track projekt.id; let i = $index) {
+
+                    <li
+                        class="sidebar-ProjektHoover"
+                        [class.aktiv]="ausgewaehltesProjekt?.id === projekt.id"
+                    >
+                        <span class="sidebar-ProjektText" (click)="projektAuswaehlen(projekt)">
+                            {{ projekt.name }}
+                        </span>
+                        <img
+                            class="sidebar-DreiPunkteIcon"
+                            src="/assets/DreiPunkteIcon.png"
+                            alt="Projektoptionen"
+                            (click)="popupOeffnen(i)"
+                        >
+
+                    </li>
+
+                } @empty {
+                    @if (!isLoading) {
+                        <p>Noch keine Projekte vorhanden.</p>
+                    }
+                }
+
+            </ul>
+
+        </div>
+
+        <div class="sidebar-ProfileContainer">
+
+            <button class="sidebar-ProfileContainer-icon" (click)="goToLogout()" style="border: none;">
+                <img src="assets/arrowBack.png" class="sidebar-ProfileContainer-arrowback">
+            </button>
+
+            <div>
+
+                <h1 class="sidebar-ProfileContainer-Text" style="cursor: default;">
+                    {{ userName }}
+                </h1>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="mainContainer">
+
+        @if (ausgewaehltesProjekt) {
+
+            <app-projectitem
+                [projekt]="ausgewaehltesProjekt"
+            ></app-projectitem>
+
+        } @else {
+
+            <app-indexsite></app-indexsite>
+
+        }
+
+    </div>
+
+</div>
+
+@if (popupSichtbar && ausgewaehltesProjektIndex !== null) {
+
+    <div
+        class="popupOverlay"
+        (click)="popupSchliessen()"
+    >
+
+        <div
+            class="popupContainer"
+            role="dialog"
+            aria-modal="true"
+            (click)="$event.stopPropagation()"
+        >
+
+            <h2>Projektoptionen</h2>
+
+            <p>
+                {{ projekte[ausgewaehltesProjektIndex]?.name }}
+            </p>
+
+            <button
+                type="button"
+                (click)="projektUmbenennen()"
+            >
+                Projekt umbenennen
+            </button>
+
+            <button
+                type="button"
+                (click)="projektLoeschen()"
+            >
+                Projekt löschen
+            </button>
+
+            <button
+                type="button"
+                (click)="popupSchliessen()"
+            >
+                Schließen
+            </button>
+
+        </div>
+
+    </div>
+
+}

@@ -1,0 +1,44 @@
+.container {
+    display: flex;
+    justify-content: center;
+    margin-top: 160px;
+    flex-direction: column;
+    text-align: center;
+}
+
+.title {
+    font-size: 48px;
+    font-family: cursive;
+    text-transform: uppercase;
+    cursor: default;
+    text-decoration: underline;
+}
+
+.Login-btn {
+    width: 20vw;
+    margin-left: 33vw;
+    height: 80px;
+    color: black;
+    background-color: #fde0b8;
+    border-radius: 20px;
+    font-size: 36px;
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    cursor: pointer;
+    border: 5px solid black;
+    animation: btn-Animation 2s infinite;
+}
+
+@keyframes btn-Animation {
+    20% {
+        border-top-color: red;
+    }
+    40% {
+        border-right-color: red;
+    }
+    60% {
+        border-bottom-color: red;
+    }
+    80% {
+        border-left-color: red;
+    }
+}

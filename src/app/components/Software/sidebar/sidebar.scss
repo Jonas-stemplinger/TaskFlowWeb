@@ -1,0 +1,333 @@
+.indexContainer {
+    display: flex;
+    height: 100dvh;
+    width: 100%;
+    overflow: hidden;
+}
+
+.sidebar {
+    box-sizing: border-box;
+    display: flex;
+    flex: 0 0 260px;
+    flex-direction: column;
+    gap: 18px;
+
+    height: 100%;
+    min-height: 0;
+
+    padding: 20px 16px;
+    background-color: #F9EDDE;
+    color: #7B515F;
+
+    overflow: hidden;
+}
+
+.sidebar-LogoContainer {
+    padding: 0 8px 8px;
+}
+
+.sidebar-LogoText {
+    margin: 0;
+    color: #4D3840;
+    font-size: 24px;
+    font-style: italic;
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+.sidebar-LogoText span {
+    font-size: 14px;
+    font-weight: 400;
+}
+
+.sidebar-MeinTagContainer {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 12px;
+    width: 100%;
+    min-height: 44px;
+    padding: 0 12px;
+    border: 0;
+    border-radius: 10px;
+    background: transparent;
+    color: inherit;
+    cursor: pointer;
+    text-align: left;
+    transition: background-color 0.2s;
+}
+
+.sidebar-MeinTagContainer:hover, .sidebar-MeinTagContainer:focus-visible, .sidebar-ProjektHoover:hover,.sidebar-ProjektHoover:focus-within {
+    background-color: #ffd9c7;
+}
+
+.sidebar-MeinTagImg {
+    width: 22px;
+    height: 22px;
+    object-fit: contain;
+}
+
+.sidebar-MeinTagText {
+    font-size: 16px;
+    font-weight: 500;
+}
+
+.sidebar-MeineProjekteContainer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-top: 12px;
+}
+
+.sidebar-MeineProjekte-Text {
+    margin: 0;
+    font-size: 12px;
+    font-weight: 800;
+    text-transform: uppercase;
+}
+
+.sidebar-MeineProjekte-Button {
+    flex: 0 0 32px;
+    width: 32px;
+    height: 32px;
+    border: 0;
+    border-radius: 8px;
+    background-color: #FDE0B8;
+    color: #4D3840;
+    font-size: 20px;
+    line-height: 1;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.sidebar-MeineProjekte-Button:hover {
+    background-color: #f7c7b2;
+}
+
+.sidebar-ProjektListeContainer {
+    flex: 1;
+    min-width: 0;
+    min-height: 0;
+
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.sidebar-ProjektListe {
+    display: grid;
+    gap: 4px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.sidebar-ProjektHoover {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    min-height: 42px;
+    padding: 0 12px;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.sidebar-ProjektText {
+    overflow: hidden;
+    font-size: 15px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.sidebar-DreiPunkteIcon {
+    flex: 0 0 18px;
+    width: 18px;
+    height: 18px;
+    object-fit: contain;
+    padding: 5px;
+    transition: background-color 0.2s;
+    border-radius: 50%;
+}
+
+.sidebar-DreiPunkteIcon:hover {
+    background-color: #f7c7b2;
+}
+
+.mainContainer {
+    flex: 1;
+    min-width: 0;
+    min-height: 0;
+
+    height: 100%;
+    overflow-y: auto;
+
+    background-color: #fdf8f3;
+}
+
+.popupOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.popupContainer {
+    background-color: #ffffff;
+    width: 400px;
+    max-width: 90%;
+    padding: 25px;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.25);
+}
+
+.popupContainer h2 {
+    margin: 0;
+    font-size: 22px;
+    color: #222;
+}
+
+.popupContainer button {
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    background-color: #FDE0B8;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.2s;
+}
+
+.popupContainer button:hover {
+    background-color: #f7c7b2;
+}
+
+.popupContainer {
+    animation: popupAnimation 0.2s ease-out;
+}
+
+.sidebar-ProfileContainer {
+    border-top: solid 0.01px #7B515F;
+    padding-top: 10px;
+
+    display: flex;
+
+    margin-top: auto;
+    flex-shrink: 0;
+
+    width: 100%;
+    min-height: 60px;
+}
+
+.sidebar-ProjektListeContainer {
+
+    &::-webkit-scrollbar {
+        width: 5px;
+    }
+
+    &::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background-color: #c9a8a0;
+        border-radius: 10px;
+    }
+}
+
+.sidebar-ProfileContainer-icon {
+    width: 36px;
+    height: 36px; 
+    background-color: #7B515F;
+    border-radius: 50%;
+    color: white;
+    display: flex;
+    align-items: end;
+    justify-content: end;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.sidebar-ProfileContainer-arrowback {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    padding: 6px;
+}
+
+.sidebar-ProfileContainer h1 {
+    font-size: 20px;
+    margin: 15px;
+    white-space: nowrap;
+}
+
+.sidebar-ProjektHoover.aktiv {
+    background-color: #ffd9c7;
+}
+
+.sidebar-ProjektText {
+    flex: 1;
+    cursor: pointer;
+}
+
+.sidebar-error {
+    color: white;
+    font-size: 32px;
+}
+
+.mainContainer {
+    flex: 1;
+    min-width: 0;
+    background-color: #fdf8f3;
+}
+
+@keyframes popupAnimation {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.error-message-container {
+    position: absolute;
+    bottom: 40px;
+    right: 40px;
+    background-color: red;
+    border-radius: 20px;
+    text-align: center;
+    height: 10vw;
+    width: 30vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-weight: 1000;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 32px;
+    border: 2px solid black;
+}
+
+.LoadingAnimation {
+    animation: loadinganimationText 2s infinite;
+}
+
+@keyframes loadinganimationText {
+    0% {
+        padding-left: 0px;
+    }
+    50% {
+        padding-left: 100px;
+    }
+}

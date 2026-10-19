@@ -1,0 +1,164 @@
+<main class="container">
+    <div class="top-label">
+
+        <span class="dot"></span>
+
+        <span>
+            Projekt {{ projekt.id }}
+        </span>
+
+    </div>
+
+    <header class="header">
+        <div>
+            <h1>
+                {{ projekt.name }}
+            </h1>
+
+            <p class="subtitle">
+                {{ tasks().length }} Tasks vorhanden
+            </p>
+        </div>
+    </header>
+
+    @if (errorMessage()) {
+
+    <div class="error-message-container">
+        <p class="error-message">
+            {{ errorMessage() }}
+        </p>
+    </div>
+
+    }
+
+    <div class="projectitem-meineTasksContainer">
+        <section class="todo-header">
+
+            <div class="todo-title">
+                <h2 style="font-weight: 100;">Meine Tasks</h2>
+            </div>
+
+        </section>
+
+        @if (tasksLaden()) {
+
+        <p class="LoadingAnimation">Tasks werden geladen...</p>
+
+        }
+
+        <section class="task-list">
+
+            @for (task of tasks(); track task.id) {
+
+            <div class="task-item" [class.task-selected]="ausgewaehlterTask()?.id === task.id"
+                (click)="taskAuswaehlen(task)">
+
+                <button class="task-select" type="button">
+                    {{ task.title }}
+                </button>
+
+                <span>
+                    {{ task.isCompleted ? 'Erledigt' : 'Offen' }}
+                </span>
+
+                <button class="task-action" type="button" [disabled]="taskWirdGespeichert() !== null"
+                    (click)="taskStatusAendern(task)">
+
+                    @if (taskWirdGespeichert() === task.id) {
+
+                    Speichern...
+
+                    } @else {
+
+                    {{ task.isCompleted ? 'Weghaken' : 'Abhaken' }}
+
+                    }
+
+                </button>
+
+                <button class="delete-btn" type="button" (click)="taskLoeschen(task)">
+                    X
+                </button>
+
+            </div>
+
+            } @empty {
+
+            @if (!tasksLaden()) {
+            <p>Dieses Projekt hat noch keine Tasks.</p>
+            }
+
+            }
+
+        </section>
+    </div>
+
+    <footer class="todo-footer">
+
+        <button class="new-todo-btn" type="button" (click)="todoHinzufuegen()" [disabled]="!ausgewaehlterTask()">
+            <span>+</span>
+            Neues Todo
+        </button>
+
+        <button class="add-todo" type="button" (click)="taskHinzufuegen()">
+            <span>+</span>
+            Task hinzufügen
+        </button>
+    </footer>
+
+    @if (ausgewaehlterTask(); as task) {
+
+    <section class="todo-header">
+
+        <div class="todo-title">
+
+            <h2>{{ task.title }}</h2>
+
+            <button type="button" (click)="taskUmbenennen()">
+                ✎ Umbenennen
+            </button>
+
+        </div>
+
+    </section>
+
+    }
+
+    @if (todosLaden()) {
+
+    <p class="LoadingAnimation">Todos werden geladen...</p>
+
+    }
+
+    <section class="todo-list">
+
+        @for (todo of todos(); track todo.id) {
+
+        <div class="todo-item">
+
+            <div class="todo-left">
+
+                <input type="checkbox" class="todo-checkbox" [id]="'todo-' + todo.id" [checked]="todo.isCompleted"
+                    [disabled]="todoWirdGespeichert() !== null" (change)="todoStatusAendern(todo)">
+
+                <label class="todo-name" [for]="'todo-' + todo.id">
+                    {{ todo.title }}
+                </label>
+
+            </div>
+
+            <button type="button" class="delete-btn" (click)="todoLoeschen(todo)">
+                X
+            </button>
+
+        </div>
+
+        } @empty {
+
+        @if (!todosLaden()) {
+        <p>Noch keine Todos vorhanden.</p>
+        }
+
+        }
+    </section>
+</main>
