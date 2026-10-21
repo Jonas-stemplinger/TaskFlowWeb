@@ -1,4 +1,104 @@
 <div class="container">
-    <p class="title">Task-Flow-Web</p>
-    <!-- <button class="Login-btn" routerLink="/login">Login</button> -->
+    <p class="title">Dashboard</p>
 </div>
+
+@if (isLoading()) {
+    <p class="board-message">Vorhandene Todos werden geladen...</p>
+}
+
+@if (errorMessage()) {
+    <p class="board-message error-message">{{ errorMessage() }}</p>
+}
+
+<div class="DashboardContainer">
+    <section class="DashboardFlexContainer low-priority"
+        (dragover)="ablageErlauben($event)"
+        (drop)="todoAblegen('low', $event)">
+        <header class="priority-header">
+            <h2>Low-Prio</h2>
+            <button type="button" aria-label="Bestehendes Todo zu Low-Prio hinzufügen"
+                (click)="todoPickerOeffnen('low')">+</button>
+        </header>
+        <div class="todo-list">
+            @for (item of todosInPriority('low'); track todoKey(item.todo)) {
+                <article class="TodoContainer Low-PrioTodo" draggable="true"
+                    (dragstart)="todoZiehen(item, $event)">
+                    <strong>{{ item.todo.title }}</strong>
+                    <span>{{ item.taskTitle }}</span>
+                </article>
+            } @empty {
+                <p class="empty-column">Todo hier ablegen oder mit + hinzufügen</p>
+            }
+        </div>
+    </section>
+
+    <section class="DashboardFlexContainer medium-priority"
+        (dragover)="ablageErlauben($event)"
+        (drop)="todoAblegen('medium', $event)">
+        <header class="priority-header">
+            <h2>Mid-Prio</h2>
+            <button type="button" aria-label="Bestehendes Todo zu Mid-Prio hinzufügen"
+                (click)="todoPickerOeffnen('medium')">+</button>
+        </header>
+        <div class="todo-list">
+            @for (item of todosInPriority('medium'); track todoKey(item.todo)) {
+                <article class="TodoContainer Mid-PrioTodo" draggable="true"
+                    (dragstart)="todoZiehen(item, $event)">
+                    <strong>{{ item.todo.title }}</strong>
+                    <span>{{ item.taskTitle }}</span>
+                </article>
+            } @empty {
+                <p class="empty-column">Todo hier ablegen oder mit + hinzufügen</p>
+            }
+        </div>
+    </section>
+
+    <section class="DashboardFlexContainer high-priority"
+        (dragover)="ablageErlauben($event)"
+        (drop)="todoAblegen('high', $event)">
+        <header class="priority-header">
+            <h2>High-Prio</h2>
+            <button type="button" aria-label="Bestehendes Todo zu High-Prio hinzufügen"
+                (click)="todoPickerOeffnen('high')">+</button>
+        </header>
+        <div class="todo-list">
+            @for (item of todosInPriority('high'); track todoKey(item.todo)) {
+                <article class="TodoContainer High-PrioTodo" draggable="true"
+                    (dragstart)="todoZiehen(item, $event)">
+                    <strong>{{ item.todo.title }}</strong>
+                    <span>{{ item.taskTitle }}</span>
+                </article>
+            } @empty {
+                <p class="empty-column">Todo hier ablegen oder mit + hinzufügen</p>
+            }
+        </div>
+    </section>
+</div>
+
+@if (todoPickerPriority(); as priority) {
+    <div class="todo-picker-backdrop" (click)="todoPickerSchliessen()">
+        <section class="todo-picker" role="dialog" aria-modal="true"
+            [attr.aria-label]="'Bestehendes Todo zu ' + priority + '-Prio hinzufügen'"
+            (click)="$event.stopPropagation()">
+            <header class="picker-header">
+                <h2>Todo zu {{ priority === 'medium' ? 'Mid' : priority === 'low' ? 'Low' : 'High' }}-Prio hinzufügen</h2>
+                <button type="button" aria-label="Schließen" (click)="todoPickerSchliessen()">×</button>
+            </header>
+
+            @if (availableTodos().length > 0) {
+                <ul class="available-todos">
+                    @for (item of availableTodos(); track todoKey(item.todo)) {
+                        <li>
+                            <button type="button" (click)="todoHinzufuegen(item)">
+                                <strong>{{ item.todo.title }}</strong>
+                                <span>{{ item.taskTitle }}</span>
+                            </button>
+                        </li>
+                    }
+                </ul>
+            } @else {
+                <p>Keine weiteren Todos verfügbar.</p>
+            }
+        </section>
+    </div>
+}
