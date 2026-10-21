@@ -20,9 +20,7 @@
             </p>
         </div>
 
-        <button class="kanban-btn" type="button" (click)="kanbanBoardAnzeigen()">
-            Kanban Board anzeigen
-        </button>
+        
     </header>
 
     @if (errorMessage()) {
@@ -79,10 +77,13 @@
     </div>
 
     <footer class="todo-footer">
-
         <button class="new-todo-btn" type="button" (click)="todoHinzufuegen()" [disabled]="!ausgewaehlterTask()">
             <span>+</span>
             Neues Todo
+        </button>
+
+        <button class="kanban-btn" type="button" (click)="kanbanBoardAnzeigen()">
+            Kanban Board
         </button>
 
         <button class="add-todo" type="button" (click)="taskHinzufuegen()">

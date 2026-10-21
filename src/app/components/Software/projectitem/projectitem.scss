@@ -361,11 +361,11 @@ h1 {
     font: italic;
     font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
     color: black;
-    border: 1px black solid;
+    border: none;
     border-radius: 20px;
     margin-top: 10px;
     cursor: pointer;
-    background-color: rgba(255, 255, 255, 0.2);
+    background-color: transparent;
     margin-right: 40px;
     padding: 5px;
     padding-right: 15px;
@@ -374,7 +374,7 @@ h1 {
 }
 
 .task-select:hover {
-    background-color: rgba(0, 0, 0, 0.1);
+    background-color: rgba(0, 0, 0, 0.08);
 }
 
 
