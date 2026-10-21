@@ -1,0 +1,331 @@
+//Farben Variablen Frabpalete
+$background: #FDF8F3;
+$sidebar-color: #F9EDDE;
+$primary: #7B515F;
+$primary-dark: #4D3840;
+$peach: #FFD9C7;
+$peach-light: #FDE0B8;
+$text-muted: #9B7C85;
+$white: #FFFFFF;
+$error: #B84A55;
+
+
+:host {
+    display: block;
+    min-height: 100dvh;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Arial, sans-serif;
+}
+
+body {
+    min-height: 100dvh;
+    width: 100%;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    padding: 30px 20px;
+
+    background:
+        radial-gradient(
+            circle at 15% 20%,
+            rgba(255, 217, 199, 0.55),
+            transparent 35%
+        ),
+        radial-gradient(
+            circle at 85% 80%,
+            rgba(253, 224, 184, 0.45),
+            transparent 35%
+        ),
+        $background;
+}
+
+.login-box {
+    width: 100%;
+    max-width: 420px;
+
+    padding: 45px 40px;
+
+    background-color: $sidebar-color;
+
+    border: 1px solid rgba(123, 81, 95, 0.10);
+    border-radius: 20px;
+
+    box-shadow:
+        0 10px 30px rgba(77, 56, 64, 0.06),
+        0 25px 60px rgba(77, 56, 64, 0.04);
+
+    text-align: center;
+
+    animation: fadeIn 0.5s ease;
+}
+
+h2 {
+    margin-bottom: 30px;
+
+    color: $primary-dark;
+
+    font-size: 30px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+
+    width: 100%;
+}
+
+input {
+    width: 100%;
+    height: 50px;
+
+    padding: 0 16px;
+
+    border: 1.5px solid rgba(123, 81, 95, 0.15);
+    border-radius: 12px;
+
+    background-color: $white;
+
+    color: $primary-dark;
+
+    font-size: 15px;
+    font-weight: 400;
+
+    outline: none;
+
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease,
+        background-color 0.2s ease;
+
+    &::placeholder {
+        color: $text-muted;
+        opacity: 0.85;
+    }
+
+    &:hover {
+        border-color: rgba(123, 81, 95, 0.35);
+    }
+
+    &:focus {
+        border-color: $primary;
+
+        background-color: $white;
+
+        box-shadow:
+            0 0 0 4px rgba(123, 81, 95, 0.10);
+    }
+}
+
+
+button {
+    width: 100%;
+    height: 50px;
+
+    margin-top: 8px;
+
+    border: none;
+    border-radius: 12px;
+
+    background-color: $primary;
+
+    color: $white;
+
+    font-size: 16px;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition:
+        background-color 0.2s ease,
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+
+    &:hover {
+        background-color: $primary-dark;
+
+        transform: translateY(-2px);
+
+        box-shadow:
+            0 8px 20px rgba(123, 81, 95, 0.20);
+    }
+
+    &:active {
+        transform: translateY(0);
+        box-shadow: none;
+    }
+
+    &:focus-visible {
+        outline: 3px solid $peach;
+        outline-offset: 3px;
+    }
+
+    &:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        transform: none;
+    }
+}
+
+p {
+    margin-top: 25px;
+
+    color: $text-muted;
+
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+a {
+    color: $primary;
+
+    font-weight: 600;
+
+    text-decoration: none;
+
+    transition: color 0.2s ease;
+
+    &:hover {
+        color: $primary-dark;
+        text-decoration: underline;
+    }
+
+    &:focus-visible {
+        outline: 2px solid $primary;
+        outline-offset: 4px;
+        border-radius: 2px;
+    }
+}
+
+.error-message-container {
+    position: fixed;
+
+    bottom: 30px;
+    right: 30px;
+
+    z-index: 1000;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    width: 350px;
+    max-width: calc(100vw - 40px);
+    min-height: 70px;
+
+    padding: 16px 24px;
+
+    background-color: #FFF0F0;
+
+    border: 1px solid rgba(184, 74, 85, 0.25);
+    border-left: 4px solid $error;
+    border-radius: 12px;
+
+    box-shadow:
+        0 8px 30px rgba(77, 56, 64, 0.12);
+
+    color: $error;
+
+    text-align: center;
+
+    animation: slideIn 0.3s ease;
+
+    p {
+        margin: 0;
+
+        color: $error !important;
+
+        font-size: 14px !important;
+        font-weight: 500;
+        line-height: 1.5;
+    }
+}
+
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(15px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateX(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@media (max-width: 600px) {
+
+    body {
+        padding: 20px 16px;
+    }
+
+    .login-box {
+        max-width: 100%;
+
+        padding: 35px 25px;
+
+        border-radius: 16px;
+    }
+
+    h2 {
+        font-size: 26px;
+        margin-bottom: 25px;
+    }
+
+    input {
+        height: 48px;
+        font-size: 14px;
+    }
+
+    button {
+        height: 48px;
+        font-size: 15px;
+    }
+
+    .error-message-container {
+        bottom: 20px;
+        right: 20px;
+        left: 20px;
+
+        width: auto;
+        max-width: none;
+    }
+}
+
+
+@media (prefers-reduced-motion: reduce) {
+
+    .login-box,
+    .error-message-container {
+        animation: none;
+    }
+
+    button,
+    input,
+    a {
+        transition: none;
+    }
+}

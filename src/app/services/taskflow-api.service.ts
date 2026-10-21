@@ -5,6 +5,7 @@ import { User, CreateUserRequest, LoginRequest, LoginResponse } from '../models/
 import { Project, CreateProjectRequest, UpdateProjectRequest } from '../models/project.model';
 import { TaskItem, CreateTaskRequest, UpdateTaskRequest } from '../models/task.model';
 import { TodoItem, CreateTodoRequest, UpdateTodoRequest } from '../models/todo.model';
+import { errorContext } from 'rxjs/internal/util/errorContext';
 
 @Injectable({
   providedIn: 'root'
@@ -122,5 +123,9 @@ export class TaskflowApiService {
 
   login(request: LoginRequest): Observable<LoginResponse> {
     return this.http.post<LoginResponse>(`${this.apiUrl}/auth/login`, request, { withCredentials: true });
+  }
+
+  register(request: CreateUserRequest): Observable<User> {
+    return this.http.post<User>(`${this.apiUrl}/users`, request, { withCredentials: true });
   }
 }
