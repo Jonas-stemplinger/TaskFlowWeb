@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { Sidebar } from './components/Software/sidebar/sidebar';
 import { LoginPage } from './components/Login/login-page/login-page';
 import { RegisterPage } from './components/Login/register-page/register-page';
+import { KanbanPage } from './components/Software/kanban-page/kanban-page';
 
 export const routes: Routes = [
 
@@ -24,6 +25,11 @@ export const routes: Routes = [
   {
     path: 'register',
     component: RegisterPage
+  },
+
+  {
+    path: 'kanban/:projectId',
+    component: KanbanPage
   }
 
 ];

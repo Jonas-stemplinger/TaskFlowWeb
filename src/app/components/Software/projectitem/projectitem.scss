@@ -44,6 +44,20 @@ body {
     gap: 20px;
 }
 
+.kanban-btn {
+    background: #855b69;
+    border: none;
+    border-radius: 8px;
+    padding: 12px 17px;
+    color: #fff;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.kanban-btn:hover {
+    background: #704956;
+}
+
 h1 {
     font-family: Georgia, 'Times New Roman', serif;
     font-size: 34px;
@@ -361,47 +375,6 @@ h1 {
 
 .task-select:hover {
     background-color: rgba(0, 0, 0, 0.1);
-}
-
-
-.task-textaction {
-    text-transform: uppercase;
-    margin-right: 40px;
-}
-
-.Erledigen-btn {
-    background: #ff9868;
-    border: none;
-    border-radius: 8px;
-    padding: 8px 17px;
-    font-size: 12px;
-    font-weight: 600;
-    color: #291d24;
-    cursor: pointer;
-    white-space: nowrap;
-    transition: background 0.2s;
-    margin-right: 40px;
-}
-
-.Erledigen-btn:hover {
-    background: #f88a57;
-}
-
-.Erledigen-btn span {
-    font-size: 17px;
-    font-weight: 400;
-    margin-right: 6px;
-}
-
-.task-action {
-    border: none;
-    background-color: transparent;
-    margin-left: 20px;
-    margin-right: 20px;
-    border: 2px black solid;
-    padding: 4px;
-    border-radius: 20px;
-    cursor: pointer;
 }
 
 

@@ -19,6 +19,10 @@
                 {{ tasks().length }} Tasks vorhanden
             </p>
         </div>
+
+        <button class="kanban-btn" type="button" (click)="kanbanBoardAnzeigen()">
+            Kanban Board anzeigen
+        </button>
     </header>
 
     @if (errorMessage()) {
@@ -55,25 +59,6 @@
 
                 <button class="task-select" type="button">
                     {{ task.title }}
-                </button>
-
-                <span>
-                    {{ task.isCompleted ? 'Erledigt' : 'Offen' }}
-                </span>
-
-                <button class="task-action" type="button" [disabled]="taskWirdGespeichert() !== null"
-                    (click)="taskStatusAendern(task)">
-
-                    @if (taskWirdGespeichert() === task.id) {
-
-                    Speichern...
-
-                    } @else {
-
-                    {{ task.isCompleted ? 'Weghaken' : 'Abhaken' }}
-
-                    }
-
                 </button>
 
                 <button class="delete-btn" type="button" (click)="taskLoeschen(task)">

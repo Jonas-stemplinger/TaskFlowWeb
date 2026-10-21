@@ -3,6 +3,7 @@ import { TaskflowApiService } from '../../../services/taskflow-api.service';
 import { Project } from '../../../models/project.model';
 import { TaskItem } from '../../../models/task.model';
 import { TodoItem } from '../../../models/todo.model';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-projectitem',
@@ -14,6 +15,7 @@ import { TodoItem } from '../../../models/todo.model';
 export class Projectitem implements OnChanges {
 
   private api = inject(TaskflowApiService);
+  private router = inject(Router);
 
   // Projekt aus der Sidebar
   @Input({ required: true })
@@ -31,8 +33,6 @@ export class Projectitem implements OnChanges {
 
   errorMessage = signal('');
 
-  // Verhindert doppelte API-Anfragen quasi wenn man mit signals arbeitet
-  taskWirdGespeichert = signal<number | null>(null);
   todoWirdGespeichert = signal<number | null>(null);
 
   // Verhindert, dass alte HTTP-Antworten
@@ -129,6 +129,10 @@ export class Projectitem implements OnChanges {
 
     this.todosAbrufen();
 
+  }
+
+  kanbanBoardAnzeigen(): void {
+    this.router.navigate(['/kanban', this.projekt.id]);
   }
 
   taskHinzufuegen(): void {
@@ -246,75 +250,6 @@ export class Projectitem implements OnChanges {
         this.errorMessage.set(
           'Task konnte nicht umbenannt werden.'
         );
-
-      }
-
-    });
-
-  }
-
-  taskStatusAendern(task: TaskItem): void {
-
-    // Keine mehrfachen Klicks während des Speicherns
-    if (this.taskWirdGespeichert() !== null) {
-      return;
-    }
-
-    const neuerStatus = !task.isCompleted;
-
-    this.taskWirdGespeichert.set(task.id);
-
-    this.api.updateTask(
-      task.id,
-      {
-        title: task.title,
-        isCompleted: neuerStatus
-      }
-    ).subscribe({
-
-      next: () => {
-
-        // Task-Liste aktualisieren
-        this.tasks.update(tasks =>
-          tasks.map(t =>
-            t.id === task.id
-              ? {
-                  ...t,
-                  isCompleted: neuerStatus
-                }
-              : t
-          )
-        );
-
-        // Ausgewählten Task aktualisieren
-        this.ausgewaehlterTask.update(aktuell => {
-
-          if (aktuell?.id === task.id) {
-
-            return {
-              ...aktuell,
-              isCompleted: neuerStatus
-            };
-
-          }
-
-          return aktuell;
-
-        });
-
-        this.taskWirdGespeichert.set(null);
-
-      },
-
-      error: (error) => {
-
-        console.error('Fehler beim Task-Status:', error);
-
-        this.errorMessage.set(
-          'Task-Status konnte nicht gespeichert werden.'
-        );
-
-        this.taskWirdGespeichert.set(null);
 
       }
 
