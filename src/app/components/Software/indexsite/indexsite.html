@@ -2,27 +2,69 @@
     <p class="title">Dashboard</p>
 </div>
 
-<div class="DashboardContainer">
-    <div class="DashboardFlexContainer" style="border-color: greenyellow;">
-        Low-Prio
-        <button>+</button>
-        <div id="target">
-            <div class="TodoContainer Low-PrioTodo" draggable="true" id="Low-Prio1">Test 123</div>
-        </div>
-    </div>
-    <div class="DashboardFlexContainer" style="border-color: orange;">
-        Mid-Prio
-        <button>+</button>
-        <div id="target">
-            <div class="TodoContainer Mid-PrioTodo" draggable="true" id="Mid-Prio1">Test 123</div>
-        </div>
+@if (errorMessage()) {
+<p class="board-message error-message" role="alert">{{ errorMessage() }}</p>
+}
 
-    </div>
-    <div class="DashboardFlexContainer" style="border-color: red;">
-        High-Prio
-        <button>+</button>
-        <div id="target">
-            <div class="TodoContainer High-PrioTodo" draggable="true" id="High-Prio1">Test 123</div>
+<div class="DashboardContainer">
+    @for (priority of priorities; track priority.id) {
+    <section class="DashboardFlexContainer"
+        [class.low-priority]="priority.id === 'low'"
+        [class.medium-priority]="priority.id === 'medium'"
+        [class.high-priority]="priority.id === 'high'"
+        (dragover)="dragOver($event)"
+        (drop)="todoAblegen($event, priority.id)">
+        <header class="priority-header">
+            <h2>{{ priority.label }}</h2>
+            <button type="button" [attr.aria-label]="'Todo zu ' + priority.label + ' hinzufügen'"
+                (click)="todoAuswahlOeffnen(priority.id)">+</button>
+        </header>
+
+        <div class="todo-list">
+            @for (entry of todosFuerPrioritaet(priority.id); track entry.todo.id) {
+            <article class="TodoContainer" draggable="true"
+                (dragstart)="dragStart(entry.todo.id, $event)"
+                (dragend)="dragEnd()"
+                (dragover)="dragOver($event)"
+                (drop)="todoAblegen($event, priority.id, entry.todo.id)">
+                {{ entry.todo.title }}
+                <span>{{ entry.project.name }} · {{ entry.task.title }}</span>
+            </article>
+            } @empty {
+            @if (!isLoading()) {
+            <p class="empty-column">Keine Todos in dieser Spalte.</p>
+            }
+            }
         </div>
-    </div>
+    </section>
+    }
 </div>
+
+@if (isLoading()) {
+<p class="board-message" role="status">Todos werden geladen...</p>
+}
+
+@if (pickerPriority(); as priority) {
+<div class="todo-picker-backdrop" (click)="todoAuswahlSchliessen()" (keydown.escape)="todoAuswahlSchliessen()">
+    <section class="todo-picker" role="dialog" aria-modal="true" aria-labelledby="todo-picker-title"
+        (click)="$event.stopPropagation()">
+        <header class="picker-header">
+            <h2 id="todo-picker-title">Todo zu {{ priorityLabel(priority) }} hinzufügen</h2>
+            <button type="button" aria-label="Schließen" (click)="todoAuswahlSchliessen()">×</button>
+        </header>
+
+        <ul class="available-todos">
+            @for (entry of availableTodosForPicker(); track entry.todo.id) {
+            <li>
+                <button type="button" [disabled]="isSaving()" (click)="todoHinzufuegen(entry)">
+                    <strong>{{ entry.todo.title }}</strong>
+                    <span>{{ entry.project.name }} · {{ entry.task.title }}</span>
+                </button>
+            </li>
+            } @empty {
+            <li class="empty-column">Keine verfügbaren Todos vorhanden.</li>
+            }
+        </ul>
+    </section>
+</div>
+}

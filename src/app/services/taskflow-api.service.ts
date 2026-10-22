@@ -5,6 +5,7 @@ import { User, CreateUserRequest, LoginRequest, LoginResponse } from '../models/
 import { Project, CreateProjectRequest, UpdateProjectRequest } from '../models/project.model';
 import { TaskItem, CreateTaskRequest, UpdateTaskRequest } from '../models/task.model';
 import { TodoItem, CreateTodoRequest, UpdateTodoRequest } from '../models/todo.model';
+import { DashboardTodoSetting, UpdateDashboardRequest } from '../models/dashboard.model';
 import { errorContext } from 'rxjs/internal/util/errorContext';
 
 @Injectable({
@@ -41,8 +42,8 @@ export class TaskflowApiService {
     );
   }
 
-  createProject(userId: number, request: CreateProjectRequest): Observable<Project> {
-
+  createProject(userId: number, request: CreateProjectRequest): Observable<Project> 
+  {
     return this.http.post<Project>(`${this.apiUrl}/users/${userId}/projects`, request);
   }
 
@@ -117,6 +118,19 @@ export class TaskflowApiService {
 
     return this.http.put<void>(
       `${this.apiUrl}/tasks/${taskId}/todos/${todoId}`,
+      request
+    );
+  }
+
+  getDashboard(userId: number): Observable<DashboardTodoSetting[]> {
+    return this.http.get<DashboardTodoSetting[]>(
+      `${this.apiUrl}/users/${userId}/dashboard`
+    );
+  }
+
+  updateDashboard(userId: number, request: UpdateDashboardRequest): Observable<void> {
+    return this.http.put<void>(
+      `${this.apiUrl}/users/${userId}/dashboard`,
       request
     );
   }

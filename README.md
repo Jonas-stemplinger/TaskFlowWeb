@@ -44,6 +44,15 @@ To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use th
 ng test
 ```
 
+## Dashboard persistence API
+
+The dashboard loads available Todos through the existing projects/tasks/Todos API and reads and saves their priority and order using:
+
+- `GET /api/users/{userId}/dashboard` returning `[{ "todoId": 1, "taskId": 2, "priority": "low", "position": 0 }]`
+- `PUT /api/users/{userId}/dashboard` accepting `{ "todos": [{ "todoId": 1, "taskId": 2, "priority": "low", "position": 0 }] }`
+
+The server must validate that each Todo belongs to the user and persist the Todo assignment, priority, and position in its database. The API project is not part of this repository, so these endpoints must be implemented by the backend; until then the dashboard reports loading/saving errors rather than claiming the settings were persisted.
+
 ## Running end-to-end tests
 
 For end-to-end (e2e) testing, run:
