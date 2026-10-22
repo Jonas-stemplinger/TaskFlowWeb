@@ -246,13 +246,10 @@ export class Sidebar implements OnInit {
       }
     });
   }
+  
   startseiteAnzeigen(): void {
     this.ausgewaehltesProjekt = null;
   }
-
-
-
-
 
   goToLogout(): void {
     this.router.navigate(['/login']);
