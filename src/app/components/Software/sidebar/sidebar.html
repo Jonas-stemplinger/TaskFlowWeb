@@ -1,5 +1,5 @@
 <div class="indexContainer">
-    
+
     <div class="sidebar">
         <div class="sidebar-LogoContainer">
 
@@ -11,11 +11,7 @@
 
         <button class="sidebar-MeinTagContainer" type="button" (click)="startseiteAnzeigen()">
 
-            <img
-                draggable="false"
-                src="/assets/sun.png"
-                class="sidebar-MeinTagImg"
-            >
+            <img draggable="false" src="/assets/sun.png" class="sidebar-MeinTagImg">
 
             <span class="sidebar-MeinTagText">
                 Mein Tag
@@ -36,15 +32,15 @@
         </div>
 
         @if (isLoading) {
-            <p class="LoadingAnimation">Projekte werden geladen...</p>
+        <p class="LoadingAnimation">Projekte werden geladen...</p>
         }
 
         @if (errorMessage) {
-            <div class="error-message-container">
-                <p class="sidebar-error">
-                    {{ errorMessage }}
-                </p>
-            </div>
+        <div class="error-message-container">
+            <p class="sidebar-error">
+                {{ errorMessage }}
+            </p>
+        </div>
         }
 
         <div class="sidebar-ProjektListeContainer">
@@ -53,26 +49,59 @@
 
                 @for (projekt of projekte; track projekt.id; let i = $index) {
 
-                    <li
-                        class="sidebar-ProjektHoover"
-                        [class.aktiv]="ausgewaehltesProjekt?.id === projekt.id"
-                    >
-                        <span class="sidebar-ProjektText" (click)="projektAuswaehlen(projekt)">
-                            {{ projekt.name }}
-                        </span>
-                        <img
-                            class="sidebar-DreiPunkteIcon"
-                            src="/assets/DreiPunkteIcon.png"
-                            alt="Projektoptionen"
-                            (click)="popupOeffnen(i)"
-                        >
+                <li class="sidebar-ProjektHoover" [class.aktiv]="ausgewaehltesProjekt?.id === projekt.id">
+                    <span class="sidebar-ProjektText" (click)="projektAuswaehlen(projekt)">
+                        {{ projekt.name }}
+                    </span>
+                    <img class="sidebar-DreiPunkteIcon" src="/assets/DreiPunkteIcon.png" alt="Projektoptionen"
+                        (click)="popupOeffnen(i)">
 
-                    </li>
+                </li>
 
                 } @empty {
-                    @if (!isLoading) {
-                        <p>Noch keine Projekte vorhanden.</p>
-                    }
+                @if (!isLoading) {
+                <p>Noch keine Projekte vorhanden.</p>
+                }
+                }
+
+            </ul>
+
+        </div>
+
+        <div class="sidebar-MeineProjekteContainer">
+
+            <p class="sidebar-MeineProjekte-Text">
+                Teamprojekte
+            </p>
+
+            <button class="sidebar-MeineProjekte-Button" type="button" (click)="TeamprojektHinzufuegen()">
+                +
+            </button>
+
+        </div>
+
+        <div class="sidebar-ProjektListeContainer">
+
+            <ul class="sidebar-ProjektListe">
+
+                @for (projekt of teamprojekte; track projekt.id) {
+
+                <li class="sidebar-ProjektHoover">
+
+                    <span class="sidebar-ProjektText">
+                        {{ projekt.name }}
+                    </span>
+
+                    <button type="button" (click)="mitgliedHinzufuegen(projekt.id)" title="Mitglied hinzufügen">
+                        User+
+                    </button>
+
+                </li>
+
+                } @empty {
+
+                <p>Noch keine Teamprojekte vorhanden.</p>
+
                 }
 
             </ul>
@@ -101,13 +130,11 @@
 
         @if (ausgewaehltesProjekt) {
 
-            <app-projectitem
-                [projekt]="ausgewaehltesProjekt"
-            ></app-projectitem>
+        <app-projectitem [projekt]="ausgewaehltesProjekt"></app-projectitem>
 
         } @else {
 
-            <app-indexsite></app-indexsite>
+        <app-indexsite></app-indexsite>
 
         }
 
@@ -117,84 +144,56 @@
 
 @if (popupSichtbar && ausgewaehltesProjektIndex !== null) {
 
-    <div
-        class="popupOverlay"
-        (click)="popupSchliessen()"
-    >
+<div class="popupOverlay" (click)="popupSchliessen()">
 
-        <div
-            class="popupContainer"
-            role="dialog"
-            aria-modal="true"
-            (click)="$event.stopPropagation()"
-        >
+    <div class="popupContainer" role="dialog" aria-modal="true" (click)="$event.stopPropagation()">
 
-            <h2>Projektoptionen</h2>
+        <h2>Projektoptionen</h2>
 
-            <p>
-                {{ projekte[ausgewaehltesProjektIndex]?.name }}
-            </p>
+        <p>
+            {{ projekte[ausgewaehltesProjektIndex]?.name }}
+        </p>
 
-            <button
-                type="button"
-                (click)="projektUmbenennen()"
-            >
-                Projekt umbenennen
-            </button>
+        <button type="button" (click)="projektUmbenennen()">
+            Projekt umbenennen
+        </button>
 
-            <button
-                type="button"
-                (click)="projektLoeschen()"
-            >
-                Projekt löschen
-            </button>
+        <button type="button" (click)="projektLoeschen()">
+            Projekt löschen
+        </button>
 
-            <button
-                type="button"
-                (click)="popupSchliessen()"
-            >
-                Schließen
-            </button>
-
-        </div>
+        <button type="button" (click)="popupSchliessen()">
+            Schließen
+        </button>
 
     </div>
+
+</div>
 
 }
 
 @if (projectCreatePopupSichtbar) {
-    <div
-        class="popupOverlay"
-        (click)="popupSchliessen()"
-    >
+<div class="popupOverlay" (click)="popupSchliessen()">
 
-        <div
-            class="popupContainer"
-            role="dialog"
-            aria-modal="true"
-            (click)="$event.stopPropagation()"
-        >
+    <div class="popupContainer" role="dialog" aria-modal="true" (click)="$event.stopPropagation()">
 
-            <h2>Projekt erstellen</h2>
+        <h2>Projekt erstellen</h2>
 
-            <p>Dein neues Projekt...</p>
+        <p>Dein neues Projekt...</p>
 
-            <button type="button" (click)="projektHinzufuegen()">
-                Einzel-Projekt erstellen
-            </button>
+        <button type="button" (click)="projektHinzufuegen()">
+            Einzel-Projekt erstellen
+        </button>
 
-            <button type="button" (click)="TeamprojektHinzufuegen()">
-                Team-Projekt erstellen
-            </button>
+        <button type="button" (click)="TeamprojektHinzufuegen()">
+            Team-Projekt erstellen
+        </button>
 
-            <button
-                type="button"
-                (click)="projektPopupschliesen()"
-            >
-                Schließen
-            </button>
-
-        </div>
+        <button type="button" (click)="projektPopupschliesen()">
+            Schließen
+        </button>
 
     </div>
+
+</div>
 }

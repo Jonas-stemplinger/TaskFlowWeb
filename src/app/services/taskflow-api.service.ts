@@ -6,6 +6,7 @@ import { Project, CreateProjectRequest, UpdateProjectRequest } from '../models/p
 import { TaskItem, CreateTaskRequest, UpdateTaskRequest } from '../models/task.model';
 import { TodoItem, CreateTodoRequest, UpdateTodoRequest } from '../models/todo.model';
 import { DashboardTodoSetting, UpdateDashboardRequest } from '../models/dashboard.model';
+import { Teamproject, CreateTeamprojectRequest } from '../models/teamproject.model';
 import { errorContext } from 'rxjs/internal/util/errorContext';
 
 @Injectable({
@@ -42,8 +43,7 @@ export class TaskflowApiService {
     );
   }
 
-  createProject(userId: number, request: CreateProjectRequest): Observable<Project> 
-  {
+  createProject(userId: number, request: CreateProjectRequest): Observable<Project> {
     return this.http.post<Project>(`${this.apiUrl}/users/${userId}/projects`, request);
   }
 
@@ -142,4 +142,47 @@ export class TaskflowApiService {
   register(request: CreateUserRequest): Observable<User> {
     return this.http.post<User>(`${this.apiUrl}/users`, request, { withCredentials: true });
   }
+
+  createTeamproject(userId: number, request: CreateTeamprojectRequest): Observable<Teamproject> {
+
+    return this.http.post<Teamproject>(
+      `${this.apiUrl}/users/${userId}/teamprojects`,
+      request
+    );
+  }
+
+  getTeamprojects(userId: number): Observable<Teamproject[]> {
+    return this.http.get<Teamproject[]>(
+      `${this.apiUrl}/users/${userId}/teamprojects`
+    );
+  }
+
+  addTeamprojectMember(userId: number, teamprojectId: number, email: string): Observable<{ message: string }> {
+    return this.http.post<{ message: string }>(
+      `${this.apiUrl}/users/${userId}/teamprojects/${teamprojectId}/members`,
+      {
+        userEmail: email
+      }
+    );
+  }
+  getTeamprojectTasks(
+    teamprojectId: number
+  ): Observable<TaskItem[]> {
+
+    return this.http.get<TaskItem[]>(
+      `${this.apiUrl}/teamprojects/${teamprojectId}/tasks`
+    );
+  }
+
+  createTeamprojectTask(
+    teamprojectId: number,
+    request: CreateTaskRequest
+  ): Observable<TaskItem> {
+
+    return this.http.post<TaskItem>(
+      `${this.apiUrl}/teamprojects/${teamprojectId}/tasks`,
+      request
+    );
+  }
+
 }

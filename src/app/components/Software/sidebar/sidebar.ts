@@ -3,6 +3,7 @@ import { Indexsite } from '../indexsite/indexsite';
 import { Projectitem } from '../projectitem/projectitem';
 import { TaskflowApiService } from '../../../services/taskflow-api.service';
 import { Project } from '../../../models/project.model';
+import { Teamproject } from '../../../models/teamproject.model';
 import { Router } from '@angular/router';
 
 @Component({
@@ -22,6 +23,7 @@ export class Sidebar implements OnInit {
   userName: string = String(sessionStorage.getItem('userName'));
 
   projekte: Project[] = [];
+  teamprojekte: Teamproject[] = [];
 
   ausgewaehltesProjekt: Project | null = null;
 
@@ -34,12 +36,14 @@ export class Sidebar implements OnInit {
 
   errorMessage: string = '';
 
-  constructor(private router: Router) {}
+  constructor(private router: Router) { }
 
 
   ngOnInit(): void {
 
     this.projekteLaden();
+
+    this.teamprojekteLaden();
 
   }
 
@@ -126,29 +130,73 @@ export class Sidebar implements OnInit {
 
   }
 
+  teamprojekteLaden(): void {
+
+    this.api.getTeamprojects(this.userId).subscribe({
+
+      next: (daten) => {
+
+        this.teamprojekte = [...daten];
+
+        this.cdr.markForCheck();
+      },
+
+      error: (error) => {
+
+        console.error(error);
+
+        this.errorMessage =
+          'Teamprojekte konnten nicht geladen werden.';
+      }
+
+    });
+
+  }
+
   TeamprojektHinzufuegen(): void {
 
-    const name = prompt('Wie soll das Team-Projekt heißen?');
+    const name = prompt('Wie soll das Teamprojekt heißen?');
 
     if (!name || !name.trim()) {
       return;
     }
 
-    this.api.createProject(
+    const emails = prompt(
+      'E-Mail-Adressen der Mitglieder (mit Komma trennen):'
+    );
+
+    if (emails === null) {
+      return;
+    }
+
+    const usersListEmail = emails.split(',').map(email => email.trim()).filter(email => email.length > 0);
+
+    this.api.createTeamproject(
       this.userId,
       {
-        name: name.trim()
+        name: name.trim(),
+        usersListEmail: usersListEmail
       }
     ).subscribe({
 
       next: (projekt) => {
-        this.projektAuswaehlen(projekt);
+
+        this.teamprojekte = [
+          ...this.teamprojekte,
+          projekt
+        ];
+
+        this.projectCreatePopupSichtbar = false;
+
+        console.log('Teamprojekt erstellt:', projekt);
       },
 
       error: (error) => {
+
         console.error(error);
 
-        this.errorMessage = 'Projekt konnte nicht erstellt werden.';
+        this.errorMessage =
+          'Teamprojekt konnte nicht erstellt werden.';
       }
 
     });
@@ -191,7 +239,7 @@ export class Sidebar implements OnInit {
     if (!neuerName || !neuerName.trim()) {
       return;
     }
-    this.api.updateProject(this.userId, projekt.id, { name: neuerName.trim() } ).subscribe({
+    this.api.updateProject(this.userId, projekt.id, { name: neuerName.trim() }).subscribe({
       next: () => {
         this.projekte = this.projekte.map(p => {
           if (p.id === projekt.id) {
@@ -246,12 +294,50 @@ export class Sidebar implements OnInit {
       }
     });
   }
-  
+
   startseiteAnzeigen(): void {
     this.ausgewaehltesProjekt = null;
   }
 
   goToLogout(): void {
     this.router.navigate(['/login']);
+  }
+
+  mitgliedHinzufuegen(teamprojectId: number): void {
+
+    const email = prompt(
+      'E-Mail-Adresse des neuen Mitglieds:'
+    );
+
+    if (!email || !email.trim()) {
+      return;
+    }
+
+    this.api.addTeamprojectMember(
+      this.userId,
+      teamprojectId,
+      email.trim()
+    ).subscribe({
+
+      next: () => {
+        alert('Mitglied erfolgreich hinzugefügt!');
+      },
+
+      error: (error) => {
+
+        if (error.status === 404) {
+          alert('Benutzer oder Teamprojekt nicht gefunden.');
+        }
+        else if (error.status === 409) {
+          alert('Dieser Benutzer ist bereits Mitglied.');
+        }
+        else {
+          alert('Mitglied konnte nicht hinzugefügt werden.');
+        }
+
+      }
+
+    });
+
   }
 }
