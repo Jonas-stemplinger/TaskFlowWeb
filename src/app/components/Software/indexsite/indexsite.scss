@@ -192,6 +192,13 @@
     font-size: 12px;
 }
 
+.span-btn {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    color: #806b70
+}
+
 @media (max-width: 760px) {
     .DashboardContainer {
         grid-template-columns: 1fr;

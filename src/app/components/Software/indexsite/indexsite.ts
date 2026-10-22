@@ -97,6 +97,20 @@ export class Indexsite implements OnInit {
     );
   }
 
+  todoVomDashboardEntfernen(entry: DashboardTodo): void {
+    if (this.isSaving()) {
+      return;
+    }
+
+    const previousBoard = this.boardTodos();
+    const updatedBoard = previousBoard.filter(item => item.todo.id !== entry.todo.id);
+    if (updatedBoard.length === previousBoard.length) {
+      return;
+    }
+
+    this.updateBoard(updatedBoard, previousBoard);
+  }
+
   dragStart(todoId: number, event: DragEvent): void {
     if (this.isSaving()) {
       event.preventDefault();

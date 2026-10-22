@@ -6,14 +6,11 @@
 <p class="board-message error-message" role="alert">{{ errorMessage() }}</p>
 }
 
+<!--Drag and drop documentation von https://angular.dev/guide/drag-drop-->
+
 <div class="DashboardContainer">
     @for (priority of priorities; track priority.id) {
-    <section class="DashboardFlexContainer"
-        [class.low-priority]="priority.id === 'low'"
-        [class.medium-priority]="priority.id === 'medium'"
-        [class.high-priority]="priority.id === 'high'"
-        (dragover)="dragOver($event)"
-        (drop)="todoAblegen($event, priority.id)">
+    <section class="DashboardFlexContainer" [class.low-priority]="priority.id === 'low'" [class.medium-priority]="priority.id === 'medium'" [class.high-priority]="priority.id === 'high'" (dragover)="dragOver($event)" (drop)="todoAblegen($event, priority.id)">
         <header class="priority-header">
             <h2>{{ priority.label }}</h2>
             <button type="button" [attr.aria-label]="'Todo zu ' + priority.label + ' hinzufügen'"
@@ -28,7 +25,10 @@
                 (dragover)="dragOver($event)"
                 (drop)="todoAblegen($event, priority.id, entry.todo.id)">
                 {{ entry.todo.title }}
-                <span>{{ entry.project.name }} · {{ entry.task.title }}</span>
+                <span>{{ entry.project.name }} · {{ entry.task.title }} · <button type="button" class="span-btn"
+                    [attr.aria-label]="'Todo ' + entry.todo.title + ' vom Dashboard entfernen'"
+                    [disabled]="isSaving()"
+                    (click)="$event.stopPropagation(); todoVomDashboardEntfernen(entry)">Löschen</button></span>
             </article>
             } @empty {
             @if (!isLoading()) {
@@ -41,13 +41,12 @@
 </div>
 
 @if (isLoading()) {
-<p class="board-message" role="status">Todos werden geladen...</p>
+    <p class="board-message" role="status">Todos werden geladen...</p>
 }
 
 @if (pickerPriority(); as priority) {
 <div class="todo-picker-backdrop" (click)="todoAuswahlSchliessen()" (keydown.escape)="todoAuswahlSchliessen()">
-    <section class="todo-picker" role="dialog" aria-modal="true" aria-labelledby="todo-picker-title"
-        (click)="$event.stopPropagation()">
+    <section class="todo-picker" role="dialog" aria-modal="true" aria-labelledby="todo-picker-title" (click)="$event.stopPropagation()">
         <header class="picker-header">
             <h2 id="todo-picker-title">Todo zu {{ priorityLabel(priority) }} hinzufügen</h2>
             <button type="button" aria-label="Schließen" (click)="todoAuswahlSchliessen()">×</button>
