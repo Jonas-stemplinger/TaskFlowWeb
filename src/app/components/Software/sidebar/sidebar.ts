@@ -4,6 +4,8 @@ import { Projectitem } from '../projectitem/projectitem';
 import { TaskflowApiService } from '../../../services/taskflow-api.service';
 import { Project } from '../../../models/project.model';
 import { Teamproject } from '../../../models/teamproject.model';
+import { OnDestroy } from '@angular/core';
+import { Subscription, interval } from 'rxjs';
 import { Router } from '@angular/router';
 
 @Component({
@@ -13,7 +15,7 @@ import { Router } from '@angular/router';
   styleUrl: './sidebar.scss',
   templateUrl: './sidebar.html'
 })
-export class Sidebar implements OnInit {
+export class Sidebar implements OnInit, OnDestroy {
   private api = inject(TaskflowApiService);
 
   private cdr = inject(ChangeDetectorRef);
@@ -26,6 +28,11 @@ export class Sidebar implements OnInit {
   teamprojekte: Teamproject[] = [];
 
   ausgewaehltesProjekt: Project | null = null;
+  ausgewaehltesTeamprojekt: Teamproject | null = null;
+
+  ausgewaehltesTeamprojektIndex: number | null = null;
+
+  teamprojektPopupSichtbar: boolean = false;
 
   popupSichtbar: boolean = false;
   ausgewaehltesProjektIndex: number | null = null;
@@ -36,6 +43,8 @@ export class Sidebar implements OnInit {
 
   errorMessage: string = '';
 
+  private refreshSubscription?: Subscription;
+
   constructor(private router: Router) { }
 
 
@@ -45,6 +54,14 @@ export class Sidebar implements OnInit {
 
     this.teamprojekteLaden();
 
+    this.refreshSubscription = interval(10000).subscribe(() => {
+      this.teamprojekteLaden();
+    });
+
+  }
+
+  ngOnDestroy(): void {
+    this.refreshSubscription?.unsubscribe();
   }
 
   projekteLaden(): void {
@@ -84,7 +101,152 @@ export class Sidebar implements OnInit {
 
     this.ausgewaehltesProjekt = projekt;
 
+    this.ausgewaehltesTeamprojekt = null;
+
     console.log('Projekt ausgewählt:', projekt);
+
+  }
+
+  teamprojektPopupOeffnen(index: number): void {
+
+    if (index < 0 || index >= this.teamprojekte.length) {
+      return;
+    }
+
+    this.ausgewaehltesTeamprojektIndex = index;
+
+    this.teamprojektPopupSichtbar = true;
+
+  }
+
+  teamprojektPopupSchliessen(): void {
+
+    this.teamprojektPopupSichtbar = false;
+
+    this.ausgewaehltesTeamprojektIndex = null;
+
+  }
+
+  teamprojektUmbenennen(): void {
+
+    if (this.ausgewaehltesTeamprojektIndex === null) {
+      return;
+    }
+
+    const projekt =
+      this.teamprojekte[this.ausgewaehltesTeamprojektIndex];
+
+    if (!projekt) {
+      return;
+    }
+
+    const neuerName = prompt(
+      'Neuer Teamprojektname:',
+      projekt.name
+    );
+
+    if (!neuerName || !neuerName.trim()) {
+      return;
+    }
+
+    const name = neuerName.trim();
+
+    this.api.updateTeamproject(
+      this.userId,
+      projekt.id,
+      { name }
+    ).subscribe({
+
+      next: () => {
+
+        this.teamprojekte = this.teamprojekte.map(p =>
+          p.id === projekt.id
+            ? { ...p, name }
+            : p
+        );
+
+        if (this.ausgewaehltesTeamprojekt?.id === projekt.id) {
+
+          this.ausgewaehltesTeamprojekt =
+            this.teamprojekte.find(p => p.id === projekt.id) ?? null;
+
+        }
+
+        this.teamprojektPopupSchliessen();
+
+        this.cdr.markForCheck();
+      },
+
+      error: (error) => {
+
+        console.error(error);
+
+        this.errorMessage =
+          'Teamprojekt konnte nicht umbenannt werden.';
+
+        this.cdr.markForCheck();
+      }
+
+    });
+
+  }
+
+  teamprojektLoeschen(): void {
+
+    if (this.ausgewaehltesTeamprojektIndex === null) {
+      return;
+    }
+
+    const projekt =
+      this.teamprojekte[this.ausgewaehltesTeamprojektIndex];
+
+    if (!projekt) {
+      return;
+    }
+
+    const bestaetigung = confirm(
+      `Teamprojekt "${projekt.name}" wirklich löschen?\n\n` +
+      `Alle Tasks und Todos werden gelöscht.\n` +
+      `Das Projekt verschwindet bei ALLEN Mitgliedern.`
+    );
+
+    if (!bestaetigung) {
+      return;
+    }
+
+    this.api.deleteTeamproject(
+      this.userId,
+      projekt.id
+    ).subscribe({
+
+      next: () => {
+
+        this.teamprojekte = this.teamprojekte.filter(
+          p => p.id !== projekt.id
+        );
+
+        if (this.ausgewaehltesTeamprojekt?.id === projekt.id) {
+
+          this.ausgewaehltesTeamprojekt = null;
+
+        }
+
+        this.teamprojektPopupSchliessen();
+
+        this.cdr.markForCheck();
+      },
+
+      error: (error) => {
+
+        console.error(error);
+
+        this.errorMessage =
+          'Teamprojekt konnte nicht gelöscht werden.';
+
+        this.cdr.markForCheck();
+      }
+
+    });
 
   }
 
@@ -137,6 +299,24 @@ export class Sidebar implements OnInit {
       next: (daten) => {
 
         this.teamprojekte = [...daten];
+
+        if (this.ausgewaehltesTeamprojekt) {
+
+          const aktuellesProjekt = this.teamprojekte.find(
+            p => p.id === this.ausgewaehltesTeamprojekt?.id
+          );
+
+          if (!aktuellesProjekt) {
+
+            this.ausgewaehltesTeamprojekt = null;
+
+          } else {
+
+            this.ausgewaehltesTeamprojekt = aktuellesProjekt;
+
+          }
+
+        }
 
         this.cdr.markForCheck();
       },
@@ -296,11 +476,25 @@ export class Sidebar implements OnInit {
   }
 
   startseiteAnzeigen(): void {
+
     this.ausgewaehltesProjekt = null;
+
+    this.ausgewaehltesTeamprojekt = null;
+
   }
 
   goToLogout(): void {
     this.router.navigate(['/login']);
+  }
+
+  teamprojektAuswaehlen(projekt: Teamproject): void {
+
+    this.ausgewaehltesTeamprojekt = projekt;
+
+    this.ausgewaehltesProjekt = null;
+
+    console.log('Teamprojekt ausgewählt:', projekt);
+
   }
 
   mitgliedHinzufuegen(teamprojectId: number): void {

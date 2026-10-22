@@ -1,6 +1,7 @@
 import { Component, Input, OnChanges, SimpleChanges, inject, signal } from '@angular/core';
 import { TaskflowApiService } from '../../../services/taskflow-api.service';
 import { Project } from '../../../models/project.model';
+import { Teamproject, TeamprojectMember } from '../../../models/teamproject.model';
 import { TaskItem } from '../../../models/task.model';
 import { TodoItem } from '../../../models/todo.model';
 import { Router } from '@angular/router';
@@ -19,7 +20,13 @@ export class Projectitem implements OnChanges {
 
   // Projekt aus der Sidebar
   @Input({ required: true })
-  projekt!: Project;
+  projekt!: Project | Teamproject;
+
+  @Input()
+  isTeamProject = false;
+
+  @Input()
+  userId = 0;
 
   // Signals
   tasks = signal<TaskItem[]>([]);
@@ -35,6 +42,16 @@ export class Projectitem implements OnChanges {
 
   todoWirdGespeichert = signal<number | null>(null);
 
+  membersPopupSichtbar = signal(false);
+
+  members = signal<TeamprojectMember[]>([]);
+
+  membersLaden = signal(false);
+
+  memberEmail = '';
+
+  membersError = signal('');
+
   // Verhindert, dass alte HTTP-Antworten
   // die Daten eines neu ausgewählten Projekts überschreiben.
   private projektVersion = 0;
@@ -43,7 +60,7 @@ export class Projectitem implements OnChanges {
 
   ngOnChanges(changes: SimpleChanges): void {
 
-    if (changes['projekt'] && this.projekt) {
+    if ((changes['projekt'] || changes['isTeamProject']) && this.projekt) {
 
       this.projektVersion++;
       this.taskAuswahlVersion++;
@@ -58,9 +75,170 @@ export class Projectitem implements OnChanges {
       this.tasksAbrufen();
 
     }
+  }
+
+  openMembers(): void {
+
+    if (!this.isTeamProject) {
+      return;
+    }
+
+    this.membersPopupSichtbar.set(true);
+
+    this.membersAbrufen();
 
   }
 
+  closeMembers(): void {
+
+    this.membersPopupSichtbar.set(false);
+
+    this.membersError.set('');
+
+  }
+
+  membersAbrufen(): void {
+
+    if (!this.isTeamProject) {
+      return;
+    }
+
+    const projectId = this.projekt.id;
+
+    this.membersLaden.set(true);
+
+    this.membersError.set('');
+
+    this.api.getTeamprojectMembers(
+      this.userId,
+      projectId
+    ).subscribe({
+
+      next: (daten) => {
+
+        if (this.projekt.id !== projectId) {
+          return;
+        }
+
+        this.members.set(daten);
+
+        this.membersLaden.set(false);
+      },
+
+      error: (error) => {
+
+        console.error(error);
+
+        this.membersError.set(
+          'Mitglieder konnten nicht geladen werden.'
+        );
+
+        this.membersLaden.set(false);
+      }
+
+    });
+
+  }
+
+  memberHinzufuegen(): void {
+
+    const email = prompt(
+      'E-Mail-Adresse des neuen Mitglieds:'
+    );
+
+    if (!email || !email.trim()) {
+      return;
+    }
+
+    this.api.addTeamprojectMember(
+      this.userId,
+      this.projekt.id,
+      email.trim()
+    ).subscribe({
+
+      next: () => {
+
+        this.membersAbrufen();
+
+      },
+
+      error: (error) => {
+
+        if (error.status === 404) {
+
+          this.membersError.set(
+            'Benutzer oder Teamprojekt nicht gefunden.'
+          );
+
+        } else if (error.status === 409) {
+
+          this.membersError.set(
+            'Dieser Benutzer ist bereits Mitglied.'
+          );
+
+        } else {
+
+          this.membersError.set(
+            'Mitglied konnte nicht hinzugefügt werden.'
+          );
+
+        }
+
+      }
+
+    });
+
+  }
+
+  memberEntfernen(member: TeamprojectMember): void {
+
+    const bestaetigung = confirm(
+      `Möchtest du "${member.name}" wirklich entfernen?`
+    );
+
+    if (!bestaetigung) {
+      return;
+    }
+
+    this.api.removeTeamprojectMember(
+      this.userId,
+      this.projekt.id,
+      member.id
+    ).subscribe({
+
+      next: () => {
+
+        this.members.update(members =>
+          members.filter(m => m.id !== member.id)
+        );
+
+        if (member.id === this.userId) {
+
+          this.closeMembers();
+
+          alert(
+            'Du hast dich selbst aus dem Teamprojekt entfernt.'
+          );
+
+          // Die Sidebar muss anschließend
+          // ihre Teamprojektliste aktualisieren.
+        }
+
+      },
+
+      error: (error) => {
+
+        console.error(error);
+
+        this.membersError.set(
+          'Mitglied konnte nicht entfernt werden.'
+        );
+
+      }
+
+    });
+
+  }
 
   tasksAbrufen(): void {
 
@@ -70,7 +248,9 @@ export class Projectitem implements OnChanges {
     this.tasksLaden.set(true);
     this.errorMessage.set('');
 
-    this.api.getTasks(projectId).subscribe({
+    const request = this.isTeamProject ? this.api.getTeamprojectTasks(projectId) : this.api.getTasks(projectId);
+
+    request.subscribe({
 
       next: (daten) => {
 
@@ -146,13 +326,16 @@ export class Projectitem implements OnChanges {
     const projectId = this.projekt.id;
     const version = this.projektVersion;
 
-    this.api.createTask(
-      projectId,
-      {
-        title: title.trim(),
-        isCompleted: false
-      }
-    ).subscribe({
+    const request = {
+      title: title.trim(),
+      isCompleted: false
+    };
+
+    const createRequest = this.isTeamProject
+      ? this.api.createTeamprojectTask(projectId, request)
+      : this.api.createTask(projectId, request);
+
+    createRequest.subscribe({
 
       next: (task) => {
 
@@ -448,9 +631,9 @@ export class Projectitem implements OnChanges {
           todos.map(t =>
             t.id === todo.id
               ? {
-                  ...t,
-                  isCompleted: neuerStatus
-                }
+                ...t,
+                isCompleted: neuerStatus
+              }
               : t
           )
         );

@@ -10,7 +10,9 @@
     </div>
 
     <header class="header">
+
         <div>
+
             <h1>
                 {{ projekt.name }}
             </h1>
@@ -18,9 +20,17 @@
             <p class="subtitle">
                 {{ tasks().length }} Tasks vorhanden
             </p>
+
         </div>
 
-        
+        @if (isTeamProject) {
+
+        <button type="button" class="members-button" (click)="openMembers()">
+            +User
+        </button>
+
+        }
+
     </header>
 
     @if (errorMessage()) {
@@ -146,5 +156,82 @@
         }
 
         }
+
     </section>
 </main>
+
+@if (membersPopupSichtbar()) {
+
+<div class="members-overlay" (click)="closeMembers()">
+
+    <div class="members-popup" role="dialog" aria-modal="true" aria-label="Teammitglieder"
+        (click)="$event.stopPropagation()">
+
+        <div class="members-header">
+
+            <h2>👥 Teammitglieder</h2>
+
+            <button type="button" class="members-close" (click)="closeMembers()">
+                ✕
+            </button>
+
+        </div>
+
+        @if (membersError()) {
+
+        <p class="members-error">
+            {{ membersError() }}
+        </p>
+
+        }
+
+        @if (membersLaden()) {
+
+        <p>Mitglieder werden geladen...</p>
+
+        } @else {
+
+        <div class="members-list">
+
+            @for (member of members(); track member.id) {
+
+            <div class="member-item">
+
+                <div class="member-info">
+
+                    <strong>
+                        {{ member.name }}
+                    </strong>
+
+                    <span>
+                        {{ member.email }}
+                    </span>
+
+                </div>
+
+                <button type="button" class="member-remove" title="Mitglied entfernen"
+                    (click)="memberEntfernen(member)">
+                    🗑️
+                </button>
+
+            </div>
+
+            } @empty {
+
+            <p>Keine Mitglieder vorhanden.</p>
+
+            }
+
+        </div>
+
+        }
+
+        <button type="button" class="member-add" (click)="memberHinzufuegen()">
+            + Mitglied hinzufügen
+        </button>
+
+    </div>
+
+</div>
+
+}

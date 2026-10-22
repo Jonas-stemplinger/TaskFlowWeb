@@ -8,3 +8,13 @@ export interface CreateTeamprojectRequest {
   name: string;
   usersListEmail: string[];
 }
+
+export interface TeamprojectMember {
+  id: number;
+  name: string;
+  email: string;
+}
+
+export interface UpdateTeamprojectRequest {
+  name: string;
+}

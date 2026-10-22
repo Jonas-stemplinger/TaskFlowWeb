@@ -6,7 +6,8 @@ import { Project, CreateProjectRequest, UpdateProjectRequest } from '../models/p
 import { TaskItem, CreateTaskRequest, UpdateTaskRequest } from '../models/task.model';
 import { TodoItem, CreateTodoRequest, UpdateTodoRequest } from '../models/todo.model';
 import { DashboardTodoSetting, UpdateDashboardRequest } from '../models/dashboard.model';
-import { Teamproject, CreateTeamprojectRequest } from '../models/teamproject.model';
+import { Teamproject, CreateTeamprojectRequest, TeamprojectMember, UpdateTeamprojectRequest } from '../models/teamproject.model';
+
 import { errorContext } from 'rxjs/internal/util/errorContext';
 
 @Injectable({
@@ -182,6 +183,49 @@ export class TaskflowApiService {
     return this.http.post<TaskItem>(
       `${this.apiUrl}/teamprojects/${teamprojectId}/tasks`,
       request
+    );
+  }
+
+  updateTeamproject(
+    userId: number,
+    teamprojectId: number,
+    request: UpdateTeamprojectRequest
+  ): Observable<void> {
+
+    return this.http.put<void>(
+      `${this.apiUrl}/users/${userId}/teamprojects/${teamprojectId}`,
+      request
+    );
+  }
+
+  deleteTeamproject(
+    userId: number,
+    teamprojectId: number
+  ): Observable<void> {
+
+    return this.http.delete<void>(
+      `${this.apiUrl}/users/${userId}/teamprojects/${teamprojectId}`
+    );
+  }
+
+  getTeamprojectMembers(
+    userId: number,
+    teamprojectId: number
+  ): Observable<TeamprojectMember[]> {
+
+    return this.http.get<TeamprojectMember[]>(
+      `${this.apiUrl}/users/${userId}/teamprojects/${teamprojectId}/members`
+    );
+  }
+
+  removeTeamprojectMember(
+    userId: number,
+    teamprojectId: number,
+    memberId: number
+  ): Observable<void> {
+
+    return this.http.delete<void>(
+      `${this.apiUrl}/users/${userId}/teamprojects/${teamprojectId}/members/${memberId}`
     );
   }
 

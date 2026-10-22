@@ -84,17 +84,19 @@
 
             <ul class="sidebar-ProjektListe">
 
-                @for (projekt of teamprojekte; track projekt.id) {
+                @for (projekt of teamprojekte; track projekt.id; let i = $index) {
 
-                <li class="sidebar-ProjektHoover">
+                <li class="sidebar-ProjektHoover" [class.aktiv]="
+      ausgewaehltesTeamprojekt?.id === projekt.id
+      && !ausgewaehltesProjekt
+    ">
 
-                    <span class="sidebar-ProjektText">
+                    <span class="sidebar-ProjektText" (click)="teamprojektAuswaehlen(projekt)">
                         {{ projekt.name }}
                     </span>
 
-                    <button type="button" (click)="mitgliedHinzufuegen(projekt.id)" title="Mitglied hinzufügen">
-                        User+
-                    </button>
+                    <img class="sidebar-DreiPunkteIcon" src="/assets/DreiPunkteIcon.png" alt="Teamprojektoptionen"
+                        (click)="teamprojektPopupOeffnen(i)">
 
                 </li>
 
@@ -128,9 +130,15 @@
 
     <div class="mainContainer">
 
-        @if (ausgewaehltesProjekt) {
+        @if (ausgewaehltesTeamprojekt) {
 
-        <app-projectitem [projekt]="ausgewaehltesProjekt"></app-projectitem>
+        <app-projectitem [projekt]="ausgewaehltesTeamprojekt" [isTeamProject]="true" [userId]="userId">
+        </app-projectitem>
+
+        } @else if (ausgewaehltesProjekt) {
+
+        <app-projectitem [projekt]="ausgewaehltesProjekt" [isTeamProject]="false" [userId]="userId">
+        </app-projectitem>
 
         } @else {
 
@@ -196,4 +204,37 @@
     </div>
 
 </div>
+}
+
+@if (
+teamprojektPopupSichtbar &&
+ausgewaehltesTeamprojektIndex !== null
+) {
+
+<div class="popupOverlay" (click)="teamprojektPopupSchliessen()">
+
+    <div class="popupContainer" role="dialog" aria-modal="true" (click)="$event.stopPropagation()">
+
+        <h2>Teamprojektoptionen</h2>
+
+        <p>
+            {{ teamprojekte[ausgewaehltesTeamprojektIndex]?.name }}
+        </p>
+
+        <button type="button" (click)="teamprojektUmbenennen()">
+            Projekt umbenennen
+        </button>
+
+        <button type="button" (click)="teamprojektLoeschen()">
+            Projekt löschen
+        </button>
+
+        <button type="button" (click)="teamprojektPopupSchliessen()">
+            Schließen
+        </button>
+
+    </div>
+
+</div>
+
 }
