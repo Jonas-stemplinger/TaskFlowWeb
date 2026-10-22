@@ -29,7 +29,7 @@
                 Meine Projekte
             </p>
 
-            <button class="sidebar-MeineProjekte-Button" type="button" (click)="projektHinzufuegen()">
+            <button class="sidebar-MeineProjekte-Button" type="button" (click)="projektPopupOeffnen()">
                 +
             </button>
 
@@ -160,4 +160,41 @@
 
     </div>
 
+}
+
+@if (projectCreatePopupSichtbar) {
+    <div
+        class="popupOverlay"
+        (click)="popupSchliessen()"
+    >
+
+        <div
+            class="popupContainer"
+            role="dialog"
+            aria-modal="true"
+            (click)="$event.stopPropagation()"
+        >
+
+            <h2>Projekt erstellen</h2>
+
+            <p>Dein neues Projekt...</p>
+
+            <button type="button" (click)="TeamprojektHinzufuegen()">
+                Einzel-Projekt erstellen
+            </button>
+
+            <button type="button" (click)="projektHinzufuegen()">
+                Team-Projekt erstellen
+            </button>
+
+            <button
+                type="button"
+                (click)="projektPopupschliesen()"
+            >
+                Schließen
+            </button>
+
+        </div>
+
+    </div>
 }

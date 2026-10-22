@@ -28,6 +28,8 @@ export class Sidebar implements OnInit {
   popupSichtbar: boolean = false;
   ausgewaehltesProjektIndex: number | null = null;
 
+  projectCreatePopupSichtbar: boolean = false;
+
   isLoading: boolean = false;
 
   errorMessage: string = '';
@@ -82,6 +84,14 @@ export class Sidebar implements OnInit {
 
   }
 
+  projektPopupOeffnen(): void {
+    this.projectCreatePopupSichtbar = true;
+  }
+
+  projektPopupschliesen(): void {
+    this.projectCreatePopupSichtbar = false;
+  }
+
   projektHinzufuegen(): void {
 
     const name = prompt('Wie soll dein Projekt heißen?');
@@ -103,6 +113,35 @@ export class Sidebar implements OnInit {
           ...this.projekte,
           projekt
         ];
+        this.projektAuswaehlen(projekt);
+      },
+
+      error: (error) => {
+        console.error(error);
+
+        this.errorMessage = 'Projekt konnte nicht erstellt werden.';
+      }
+
+    });
+
+  }
+
+  TeamprojektHinzufuegen(): void {
+
+    const name = prompt('Wie soll das Team-Projekt heißen?');
+
+    if (!name || !name.trim()) {
+      return;
+    }
+
+    this.api.createProject(
+      this.userId,
+      {
+        name: name.trim()
+      }
+    ).subscribe({
+
+      next: (projekt) => {
         this.projektAuswaehlen(projekt);
       },
 
