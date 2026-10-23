@@ -670,31 +670,19 @@ export class Projectitem implements OnChanges {
       task.id,
       todo.id
     ).subscribe({
-
       next: () => {
-
         if (this.ausgewaehlterTask()?.id === task.id) {
-
           this.todos.update(todos =>
             todos.filter(t => t.id !== todo.id)
           );
-
         }
-
       },
-
       error: (error) => {
-
         console.error('Fehler beim Löschen:', error);
-
         this.errorMessage.set(
           'Todo konnte nicht gelöscht werden.'
         );
-
       }
-
     });
-
   }
-
 }
