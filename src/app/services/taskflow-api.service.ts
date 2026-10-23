@@ -7,6 +7,7 @@ import { TaskItem, CreateTaskRequest, UpdateTaskRequest } from '../models/task.m
 import { TodoItem, CreateTodoRequest, UpdateTodoRequest } from '../models/todo.model';
 import { DashboardTodoSetting, UpdateDashboardRequest } from '../models/dashboard.model';
 import { Teamproject, CreateTeamprojectRequest, TeamprojectMember, UpdateTeamprojectRequest } from '../models/teamproject.model';
+import { environment } from '../../environment/environment';
 
 import { errorContext } from 'rxjs/internal/util/errorContext';
 
@@ -17,7 +18,7 @@ export class TaskflowApiService {
 
   private http = inject(HttpClient);
 
-  private apiUrl = 'https://localhost:7216/api';
+  private apiUrl = `${environment.apiUrl}/api`;
 
   getUsers(): Observable<User[]> {
     return this.http.get<User[]>(
