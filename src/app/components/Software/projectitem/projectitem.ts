@@ -503,9 +503,6 @@ export class Projectitem implements OnChanges {
     this.api.getTodos(taskId).subscribe({
 
       next: (daten) => {
-
-        // Nur die Antwort des aktuell
-        // ausgewählten Tasks übernehmen.
         if (
           this.ausgewaehlterTask()?.id !== taskId ||
           this.taskAuswahlVersion !== version ||
@@ -573,8 +570,6 @@ export class Projectitem implements OnChanges {
 
       next: (todo) => {
 
-        // Nur hinzufügen, wenn derselbe Task
-        // noch ausgewählt ist.
         if (this.ausgewaehlterTask()?.id === task.id) {
 
           this.todos.update(todos => [

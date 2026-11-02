@@ -395,11 +395,8 @@ export class Sidebar implements OnInit, OnDestroy {
 
   }
   popupSchliessen(): void {
-
     this.popupSichtbar = false;
-
     this.ausgewaehltesProjektIndex = null;
-
   }
 
 
@@ -462,11 +459,8 @@ export class Sidebar implements OnInit, OnDestroy {
         this.projekte = this.projekte.filter(p => p.id !== projekt.id);
 
         if (this.ausgewaehltesProjekt?.id === projekt.id) {
-
           this.ausgewaehltesProjekt = null;
-
         }
-        this.popupSchliessen();
       },
       error: (error) => {
         console.error(error);
@@ -476,11 +470,8 @@ export class Sidebar implements OnInit, OnDestroy {
   }
 
   startseiteAnzeigen(): void {
-
     this.ausgewaehltesProjekt = null;
-
     this.ausgewaehltesTeamprojekt = null;
-
   }
 
   goToLogout(): void {
