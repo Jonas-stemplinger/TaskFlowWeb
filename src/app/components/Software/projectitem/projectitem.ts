@@ -18,7 +18,6 @@ export class Projectitem implements OnChanges {
   private api = inject(TaskflowApiService);
   private router = inject(Router);
 
-  // Projekt aus der Sidebar
   @Input({ required: true })
   projekt!: Project | Teamproject;
 
@@ -28,7 +27,6 @@ export class Projectitem implements OnChanges {
   @Input()
   userId = 0;
 
-  // Signals
   tasks = signal<TaskItem[]>([]);
 
   ausgewaehlterTask = signal<TaskItem | null>(null);
