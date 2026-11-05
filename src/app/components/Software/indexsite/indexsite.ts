@@ -28,9 +28,9 @@ export class Indexsite implements OnInit {
   private readonly userId = Number(sessionStorage.getItem('userId'));
 
   readonly priorities: { id: DashboardPriority; label: string }[] = [
-    { id: 'low', label: 'Low-Prio' },
-    { id: 'medium', label: 'Mid-Prio' },
-    { id: 'high', label: 'High-Prio' }
+    { id: 'low', label: 'Todo' },
+    { id: 'medium', label: 'Doing' },
+    { id: 'high', label: 'Done' }
   ];
 
   readonly availableTodos = signal<DashboardTodo[]>([]);
