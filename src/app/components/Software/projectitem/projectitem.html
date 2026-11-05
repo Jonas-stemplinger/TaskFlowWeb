@@ -87,7 +87,7 @@
     </div>
 
     <footer class="todo-footer">
-        <button class="new-todo-btn" type="button" (click)="todoHinzufuegen()" [disabled]="!ausgewaehlterTask()">
+        <button class="new-todo-btn" type="button" (click)="todoHinzufuegenPopUp()" [disabled]="!ausgewaehlterTask()">
             <span>+</span>
             Neues Todo
         </button>
@@ -96,7 +96,7 @@
             Kanban Board
         </button> -->
 
-        <button class="add-todo" type="button" (click)="taskHinzufuegen()">
+        <button class="add-todo" type="button" (click)="taskHinzufuegenPopUp()">
             <span>+</span>
             Task hinzufügen
         </button>
@@ -159,6 +159,53 @@
 
     </section>
 </main>
+
+
+
+@if (todoPopUpSichtbarVar()) {
+
+<div class="members-overlay" (click)="todoHinzufuegenPopUpschliesen()">
+
+    <div class="members-popup" role="dialog" aria-modal="true" aria-label="TodoPopup" (click)="$event.stopPropagation()">
+
+        <div style="display: flex; flex-direction: row; justify-content: space-between;">
+            <h2 style="cursor: default;">Füge ein neues Todo hinzu</h2>
+            <button type="button" class="members-close" (click)="todoHinzufuegenPopUpschliesen()">✕</button>
+        </div>
+        <input type="text" id="TodoName" #todoinput class="inputfieldTodo">
+
+        <button type="button" class="member-add" (click)="todoHinzufuegen(todoinput)">
+            + Todo hinzufügen
+        </button>
+
+    </div>
+
+</div>
+
+}
+
+@if (taskPopUpSichtbarVar()) {
+
+<div class="members-overlay" (click)="taskHinzufuegenPopUpschliesen()">
+
+    <div class="members-popup" role="dialog" aria-modal="true" aria-label="taskPopup" (click)="$event.stopPropagation()">
+
+        <div style="display: flex; flex-direction: row; justify-content: space-between;">
+            <h2 style="cursor: default;">Füge ein neue Task hinzu</h2>
+            <button type="button" class="members-close" (click)="taskHinzufuegenPopUpschliesen()">✕</button>
+        </div>
+        <input type="text" id="TaskName" #taskinput class="inputfieldTodo">
+
+        <button type="button" class="member-add" (click)="taskHinzufuegen(taskinput)">
+            + Task hinzufügen
+        </button>
+
+    </div>
+
+</div>
+
+}
+
 
 @if (membersPopupSichtbar()) {
 

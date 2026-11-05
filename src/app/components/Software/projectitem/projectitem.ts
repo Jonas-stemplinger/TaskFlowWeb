@@ -1,10 +1,11 @@
-import { Component, Input, OnChanges, SimpleChanges, inject, signal } from '@angular/core';
+import { Component, ElementRef, Input, OnChanges, SimpleChanges, ViewChild, inject, input, signal } from '@angular/core';
 import { TaskflowApiService } from '../../../services/taskflow-api.service';
 import { Project } from '../../../models/project.model';
 import { Teamproject, TeamprojectMember } from '../../../models/teamproject.model';
 import { TaskItem } from '../../../models/task.model';
 import { TodoItem } from '../../../models/todo.model';
 import { Router } from '@angular/router';
+import { HtmlParser } from '@angular/compiler';
 
 @Component({
   selector: 'app-projectitem',
@@ -41,6 +42,9 @@ export class Projectitem implements OnChanges {
   todoWirdGespeichert = signal<number | null>(null);
 
   membersPopupSichtbar = signal(false);
+
+  todoPopUpSichtbarVar = signal(false);
+  taskPopUpSichtbarVar = signal(false);
 
   members = signal<TeamprojectMember[]>([]);
 
@@ -313,9 +317,9 @@ export class Projectitem implements OnChanges {
     this.router.navigate(['/kanban', this.projekt.id]);
   }
 
-  taskHinzufuegen(): void {
+  taskHinzufuegen(inputfield:HTMLInputElement): void {
 
-    const title = prompt('Wie soll der Task heißen?');
+    const title = inputfield.value;
 
     if (!title || !title.trim()) {
       return;
@@ -351,6 +355,7 @@ export class Projectitem implements OnChanges {
 
         // Neuen Task direkt auswählen
         this.taskAuswaehlen(task);
+        this.taskHinzufuegenPopUpschliesen();
 
       },
 
@@ -541,9 +546,27 @@ export class Projectitem implements OnChanges {
 
   }
 
-  todoHinzufuegen(): void {
+  todoHinzufuegenPopUp(): void {
+    this.todoPopUpSichtbarVar.set(true)
+  }
+
+  todoHinzufuegenPopUpschliesen(): void {
+    this.todoPopUpSichtbarVar.set(false)
+  }
+
+  taskHinzufuegenPopUp(): void {
+    this.taskPopUpSichtbarVar.set(true)
+  }
+
+  taskHinzufuegenPopUpschliesen(): void {
+    this.taskPopUpSichtbarVar.set(false)
+  }
+
+  todoHinzufuegen(inputElement:HTMLInputElement): void {
 
     const task = this.ausgewaehlterTask();
+
+    
 
     if (!task) {
 
@@ -552,7 +575,8 @@ export class Projectitem implements OnChanges {
 
     }
 
-    const title = prompt('Wie soll das Todo heißen?');
+    const title = inputElement.value;
+    inputElement.value = '';
 
     if (!title || !title.trim()) {
       return;
@@ -576,6 +600,8 @@ export class Projectitem implements OnChanges {
           ]);
 
         }
+
+        this.todoHinzufuegenPopUpschliesen();
 
       },
 
