@@ -5,7 +5,6 @@ import { Teamproject, TeamprojectMember } from '../../../models/teamproject.mode
 import { TaskItem } from '../../../models/task.model';
 import { TodoItem } from '../../../models/todo.model';
 import { Router } from '@angular/router';
-import { HtmlParser } from '@angular/compiler';
 
 @Component({
   selector: 'app-projectitem',
